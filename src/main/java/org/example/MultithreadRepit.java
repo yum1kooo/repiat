@@ -7,37 +7,31 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
 
 public class MultithreadRepit {
-        public static void main(String[] args) throws ExecutionException, InterruptedException {
-            ExecutorService executor = Executors.newFixedThreadPool(5);
-            AtomicLong total = new AtomicLong(0);
-
-            int[] numbers = new int[1_000_000];
-            for (int i = 0; i < numbers.length; i++) {
-                numbers[i] = i;
-            }
-
-            Callable<int[]> method = new Callable<int[]>() {
-                @Override
-                public int[] call() throws Exception {
-                    for (int i = 0; i < 200_000; i++) {
-                        total.getAndAdd(numbers[i]);
-                        System.out.println("i in massiv = " + numbers[i] + " total = " + total.get());
-                        //499 999 500 000
-                    }
-                    return numbers;
-                }
-            };
-
-            Future<int[]> task1 = executor.submit(method);
-            Future<int[]> task2 = executor.submit(method);
-            Future<int[]> task3 = executor.submit(method);
-            Future<int[]> task4 = executor.submit(method);
-            Future<int[]> task5 = executor.submit(method);
+    public static void main(String[] args) throws ExecutionException, InterruptedException {
+        ExecutorService executor = Executors.newFixedThreadPool(5);
+        AtomicLong total = new AtomicLong(0);
 
 
-            executor.shutdown();
-            executor.awaitTermination(1, TimeUnit.MINUTES);
-
-            System.out.println("total " + total.get());
+        int[] numbers = new int[1_000_000];
+        for (int i = 0; i < numbers.length; i++) {
+            numbers[i] = i;
         }
+
+        Callable<int[]> method = new Callable<int[]>() {
+            @Override
+            public int[] call() throws Exception {
+                for (int i = 0; i < numbers.length; i++) {
+                    total.getAndAdd(numbers[i]);
+                    System.out.println("massiv = " + numbers[i] + " total = " + total.get());
+                }
+                return numbers;
+            }
+        };
+        Future<int[]> task1 = executor.submit(method);
+
+        executor.shutdown();
+        executor.awaitTermination(1, TimeUnit.MINUTES);
+
+        System.out.println("total " + total.get());
+    }
 }

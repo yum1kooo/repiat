@@ -40,6 +40,8 @@ public class LockRepiatTaskOne {
 
 class Inc{
     AtomicInteger count = new AtomicInteger(0);
+    int[] mass = new int[20_100];
+    Lock lock = new ReentrantLock();
     Lock lock1 = new ReentrantLock();
     Lock lock2 = new ReentrantLock();
 
@@ -47,6 +49,12 @@ class Inc{
         for (int i = 0; i < 20000; i++)
             count.incrementAndGet();
     }
+
+    public void addMass() {
+        for (int i = 0; i < 20000; i++)
+            mass[i] += 1;
+    }
+
 
     public void exitFromDeadLock(Lock lock1, Lock lock2) {
         boolean lock1Lock = false;
@@ -89,8 +97,8 @@ class Inc{
     public void secondThread() throws InterruptedException {
         exitFromDeadLock(lock2, lock1);
         try {
-            increment();
-            System.out.println("Поток 2 завершил работу, count=" + count);
+            addMass();
+            System.out.println("Поток 2 завершил работу, count=" + getMass());
         } finally {
             lock1.unlock();
             lock2.unlock();
@@ -99,5 +107,13 @@ class Inc{
 
     public AtomicInteger getInc() {
         return count;
+    }
+
+    public int getMass() {
+        int countMass = 0;
+        for(int i = 0; i < mass.length; i++){
+            countMass++;
+        };
+        return countMass;
     }
 }

@@ -1,6 +1,8 @@
 package org.example.LockTryLock;
 
 import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
@@ -37,12 +39,13 @@ public class LockRepiatTaskOne {
 }
 
 class Inc{
-    int count = 0;
-    Lock lock = new ReentrantLock();
+    AtomicInteger count = new AtomicInteger(0);
+    Lock lock1 = new ReentrantLock();
+    Lock lock2 = new ReentrantLock();
 
     public void increment() {
         for (int i = 0; i < 20000; i++)
-            count++;
+            count.incrementAndGet();
     }
 
     public void exitFromDeadLock(Lock lock1, Lock lock2) {
@@ -73,40 +76,28 @@ class Inc{
     }
 
     public void firstThread() throws InterruptedException {
-        while (true) {
-            if (lock.tryLock()) {
-                    try {
-                    increment();
-                    System.out.println("запись в 1 поток прошла");
-                    break;
-                    } finally {
-                        lock.unlock();
-                    }
-            } else {
-                Thread.sleep(1);
-                System.out.println("Поток занят 2 потоком");
-            }
+        exitFromDeadLock(lock1, lock2);
+        try {
+            increment();
+            System.out.println("Поток 1 завершил работу, count=" + count);
+        } finally {
+            lock2.unlock();
+            lock1.unlock();
         }
     }
 
     public void secondThread() throws InterruptedException {
-        while (true) {
-            if (lock.tryLock()) {
-                try {
-                    increment();
-                    System.out.println("запись во 2 поток прошла");
-                    break;
-                } finally {
-                    lock.unlock();
-                }
-            } else {
-                Thread.sleep(1);
-                System.out.println("Поток занят 1 потоком");
-            }
+        exitFromDeadLock(lock2, lock1);
+        try {
+            increment();
+            System.out.println("Поток 2 завершил работу, count=" + count);
+        } finally {
+            lock1.unlock();
+            lock2.unlock();
         }
     }
 
-    public int getInc() {
+    public AtomicInteger getInc() {
         return count;
     }
 }

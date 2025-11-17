@@ -66,12 +66,15 @@ class Inc{
                 lock2Lock = lock2.tryLock();
             } finally {
                 if(lock1Lock && lock2Lock){
+                    System.out.println("ОТПУСИЛ 1,2");
                     return;
                 }
                 if(lock1Lock){
+                    System.out.println("отпустил 1");
                     lock1.unlock();
                 }
                 if(lock2Lock){
+                    System.out.println("Отпустил 2");
                     lock2.unlock();
                 }
                 try {
@@ -87,6 +90,7 @@ class Inc{
         exitFromDeadLock(lock1, lock2);
         try {
             increment();
+            addMass();
             System.out.println("Поток 1 завершил работу, count=" + count);
         } finally {
             lock2.unlock();
@@ -97,13 +101,15 @@ class Inc{
     public void secondThread() throws InterruptedException {
         exitFromDeadLock(lock2, lock1);
         try {
+            increment();
             addMass();
-            System.out.println("Поток 2 завершил работу, count=" + getMass());
+            System.out.println("Поток 2 завершил работу, count=" + count);
         } finally {
             lock1.unlock();
             lock2.unlock();
         }
     }
+
 
     public AtomicInteger getInc() {
         return count;

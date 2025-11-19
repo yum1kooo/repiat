@@ -21,11 +21,10 @@ public class AppCashSystem {
             executorService.submit(new Runnable() {
                 @Override
                 public void run() {
-                    us.updateUser(rand.nextInt(13), name[rand.nextInt(5)]);
+                    us.updateUser(rand.nextInt(13), name[rand.nextInt(4)]);
                 }
             });
         }
-        executorService.shutdown();
 
         executorService.submit(new Runnable(){
             public void run() {
@@ -33,10 +32,13 @@ public class AppCashSystem {
             }
         });
 
-        executorService.submit(new Runnable(){
-            public void run() {
-
-            }
-        });
+        for (int i = 0; i < 15; i++) {
+            executorService.submit(new Runnable() {
+                public void run() {
+                    us.userCashAdd(rand.nextInt(13), name[rand.nextInt(4)]);
+                }
+            });
+        }
+        executorService.shutdown();
     }
 }

@@ -1,6 +1,7 @@
 package org.example.ReentrantReadWriteLock;
 
 import java.util.Map;
+import java.util.Random;
 import java.util.Scanner;
 import java.util.TreeMap;
 import java.util.concurrent.locks.Lock;
@@ -12,43 +13,52 @@ public class MarketData {
     Lock readLock = rwl.readLock();
     Lock writeLock = rwl.writeLock();
     Scanner sc = new Scanner(System.in);
-
+    Random rand = new Random();
    public MarketData(){
        dbSharesPrices.put("gazprom", 1.2);
        dbSharesPrices.put("lukoil", 1.2);
    }
 
 
-    public String getShares(String name) {
+    public  void printAllShares(){
        readLock.lock();
        try {
-           int countThread = rwl.getReadLockCount();
-       for (Map.Entry<String, Double> entry : dbSharesPrices.entrySet()) {
-            if (entry.getKey().equals(name.toLowerCase())) {
-                return name;
-            }
-        }
+           for(Map.Entry<String,Double> entry:dbSharesPrices.entrySet()){
+                System.out.println("name shares " + entry.getKey()+" prices "+ entry.getValue());
+       }
        } finally {
            readLock.unlock();
        }
-        return "input incorrect";
     }
 
-    public void updateDBSharesPrices() {
-        writeLock.lock();
-        System.out.println("0 - exit");
-        System.out.println("Enter name");
-        String name = sc.nextLine().trim().toLowerCase();
-        System.out.println("Enter price");
-        Double price = sc.nextDouble();
+
+    public String getShares(String name) {
+        readLock.lock();
         try {
-                for (Map.Entry<String, Double> entry : dbSharesPrices.entrySet()) {
-                    if (entry.getKey().equalsIgnoreCase(name)) {
-                        System.out.println("Shares found");
-                        dbSharesPrices.put(name.trim().toLowerCase(), price);
-                    }
-                    System.out.println("Shares updated" + " name " + name + " price " + price);
-                }
+            String key = name.toLowerCase().trim();
+            if (dbSharesPrices.containsKey(key)) {
+                Double price = dbSharesPrices.get(key);
+                System.out.println("Читателей сейчас: " + rwl.getReadLockCount());
+                return name + " price " + price;
+            }
+        } finally {
+            readLock.unlock();
+        }
+        return "name incorrect";
+    }
+
+    public void updateDBSharesPrices(String name, Double price) {
+        writeLock.lock();
+        try {
+
+            String key = name.toLowerCase().trim();
+            if(dbSharesPrices.containsKey(key)) {
+                dbSharesPrices.put(key, price);
+                System.out.println(">>> Shares updated: " + name + " New Price: " + price);
+            } else {
+                System.out.println("Акция " + name + " не найдена для обновления");
+            }
+
         } finally {
             writeLock.unlock();
         }

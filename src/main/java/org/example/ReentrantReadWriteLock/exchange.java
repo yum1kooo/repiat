@@ -11,15 +11,7 @@ public class exchange {
             executor.execute(new Runnable() {
                 @Override
                 public void run() {
-                    market.getShares("gazprom");
-                }
-            });
-        }
-        for (int i = 0; i < 4; i++) {
-            executor.execute(new Runnable() {
-                @Override
-                public void run() {
-                    market.getShares("lukoil");
+                    System.out.println(market.getShares("Lukoil"));
                 }
             });
         }
@@ -27,8 +19,27 @@ public class exchange {
         executor.submit(new Runnable() {
             @Override
             public void run() {
-                market.updateDBSharesPrices();
+                market.updateDBSharesPrices("lukoil", 16.3);
             }
         });
+
+        for (int i = 0; i < 4; i++) {
+            executor.execute(new Runnable() {
+                @Override
+                public void run() {
+                    System.out.println(market.getShares("gazprom"));
+                }
+            });
+        }
+
+        executor.submit(new Runnable() {
+            @Override
+            public void run() {
+                market.updateDBSharesPrices("gazprom", 12.3);
+            }
+        });
+
+
+        executor.shutdown();
     }
 }

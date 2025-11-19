@@ -12,10 +12,11 @@ public class UserCash {
     Lock writeLock = rwl.writeLock();
     HashMap<Integer, String> cash = new HashMap<>();
     Random rand = new Random();
-    int countIdUser = 13;
-    int countUser = 13;
-        int[] idUser = new int[countIdUser];
-        String[] user = new String[countUser];
+    // весь класс написан по тз под appcashSystem для использования random
+    int countIdUser = 13;  //сделанно для того что бы код не сыпался когда мы меняем длину массива, с этим полем везде меняеться длина
+    int countUser = 13; //сделанно для того что бы код не сыпался когда мы меняем длину массива, с этим полем везде меняеться длина
+        int[] idUser = new int[countIdUser];  // храним первые id из map
+        String[] user = new String[countUser]; //храним первые имена из map
 
     public UserCash(){
         cash.put(1, "Andrey");
@@ -34,10 +35,10 @@ public class UserCash {
 
 
         for (int i = 0; i < idUser.length; i++) {
-            idUser[i] = i;
+            idUser[i] = i; // добавляем в массив idUser столько id сколько в поле countIdUser (ну и соответственно добавляеться в массив)
         }
         for(int i = 0; i < user.length; i++){
-            user[i] = cash.get(idUser[i]);
+            user[i] = cash.get(idUser[i]); // для user[i] = берем из map по ключу имя пользователя (ну и соответственно добавляеться в массив)
         }
     }
 
@@ -46,7 +47,7 @@ public class UserCash {
         readLock.lock();
         try {
         if(cash.containsKey(id)) {
-            return cash.get(id);
+            return cash.get(id); // по ключу возвращаем имя
         }
         } finally {
             readLock.unlock();
@@ -57,8 +58,8 @@ public class UserCash {
 
     public void userCashAdd(int id, String name){
         writeLock.lock();
-        id = idUser[rand.nextInt(countIdUser)];
-        name = user[rand.nextInt(user.length)];
+        id = idUser[rand.nextInt(countIdUser)]; //после очистки "кеша" берем рандомный id из массива
+        name = user[rand.nextInt(user.length)]; // берем рандомное имя по id из массива по индексу
         try{
             cash.put(id, name);
             System.out.println("new name after clear cash " + name + " " + id);

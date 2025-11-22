@@ -1,4 +1,4 @@
-package org.example.ReentrantReadWriteLock;
+package org.example.MultiThread.ReentrantReadWriteLock;
 
 import java.util.Map;
 import java.util.Random;

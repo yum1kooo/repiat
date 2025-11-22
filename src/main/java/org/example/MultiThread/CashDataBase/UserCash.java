@@ -1,4 +1,4 @@
-package org.example.CashDataBase;
+package org.example.MultiThread.CashDataBase;
 
 import java.util.HashMap;
 import java.util.Random;

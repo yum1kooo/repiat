@@ -1,4 +1,4 @@
-package org.example.WaitNotify;
+package org.example.MultiThread.WaitNotify;
 
 import java.util.Random;
 import java.util.TreeMap;

@@ -1,4 +1,4 @@
-package org.example.SemaphoreT;
+package org.example.MultiThread.SemaphoreT;
 
 import java.util.Random;
 import java.util.concurrent.ExecutorService;

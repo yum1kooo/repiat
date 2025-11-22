@@ -1,4 +1,4 @@
-package org.example.ReentrantReadWriteLock;
+package org.example.MultiThread.ReentrantReadWriteLock;
 
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;

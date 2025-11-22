@@ -1,4 +1,4 @@
-package org.example.CollableAndFuture;
+package org.example.MultiThread.CollableAndFuture;
 
 import java.util.Random;
 import java.util.concurrent.*;

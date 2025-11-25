@@ -1,9 +1,7 @@
 package org.example.StreamAPI;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
+import java.util.stream.Collectors;
 
 public class StreamTaskOne {
     public static void main(String[] args) {
@@ -14,6 +12,8 @@ public class StreamTaskOne {
         pr.put(new Product("TV", "electronic", 53000), 1);
         pr.put(new Product("TV", "electronic", 53000), 1);
         System.out.println(pr.size());
+
+        //TASK ONE
         List<String> abc  = pr.keySet()
                 .stream()
                 .filter(x -> x.price > 5000) //фильтруем по цене
@@ -33,6 +33,48 @@ public class StreamTaskOne {
                 .mapToInt(a -> a.getKey().getPrice() * a.getValue()) //преобразуем поток в int далее берем ключ(Produce и на этом product берем getPrice) значение это кол-во
                 .sum(); // считаем сумму всех чисел
         System.out.println(sum);
+
+
+
+        //TASK TWO
+        List<Product> list = new ArrayList<>();
+        list.add(new Product("banana", "food", 39));
+        list.add(new Product("TV", "electronic", 5));
+        list.add(new Product("iphone", "electronic", 69000));
+        list.add(new Product("macbook", "electronic", 76000));
+        list.add(new Product("rtx 4080", "electronic", 150000));
+
+        //task 2.1
+        Map<String, List<Product>> collect = list.stream()
+                .collect(Collectors.groupingBy(Product::getCategory));
+        /*
+        Полученное значение (категорию) он использует как ключ в итоговой Map.
+        Сам создаёт для этого ключа список, если он ещё не создан.
+        Добавляет текущий продукт в этот список.
+        Идёт дальше по всем элементам.
+         */
+
+        for(Map.Entry<String, List<Product>> entry : collect.entrySet()) {
+            System.out.println(entry.getKey() + " -> " + entry.getValue());
+        }
+
+
+        //task 2.2
+        Map<String, Long> tas = list.stream()
+                .collect(Collectors.groupingBy(Product::getCategory, Collectors.counting()));
+
+        for(Map.Entry<String, Long> entry : tas.entrySet()) {
+            System.out.println(entry.getKey() + " -> " + entry.getValue());
+        }
+
+        //task 2.3
+
+        Map<String, Optional<Product>> collect1 = list.stream()  // 1 группируем по категории далее группируем по max цене в категории создаем comparator у указываем по чему будем
+                .collect(Collectors.groupingBy(Product::getCategory, Collectors.maxBy(Comparator.comparing(Product::getPrice))));  // сортировать макс цену
+
+        for(Map.Entry<String, Optional<Product>> entry : collect1.entrySet()) {
+            System.out.println(entry.getKey() + " -> " + entry.getValue());
+        }
     }
 }
 
@@ -84,6 +126,13 @@ class Product {
     public int hashCode() {
         return Objects.hash(name, category);
     }
+
+    @Override
+    public String toString() {
+        return "name " + name + ", category " + category + ", price " + price;
+    }
+
+
 }
 
 

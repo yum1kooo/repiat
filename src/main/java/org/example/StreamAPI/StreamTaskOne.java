@@ -75,6 +75,15 @@ public class StreamTaskOne {
         for(Map.Entry<String, Optional<Product>> entry : collect1.entrySet()) {
             System.out.println(entry.getKey() + " -> " + entry.getValue());
         }
+
+
+        //task 3.3
+        Map<String, Optional<Product>> collect2 = list.stream()  // 1 группируем по категории далее группируем по max цене в категории создаем comparator у указываем по чему будем
+                .collect(Collectors.groupingBy(Product::getCategory, Collectors.maxBy(Comparator.comparing(Product::getPrice))));  // сортировать макс цену
+
+        for(Map.Entry<String, Optional<Product>> entry : collect2.entrySet()) {
+            System.out.println(entry.getKey() + " -> " + entry.getValue());
+        }
     }
 }
 

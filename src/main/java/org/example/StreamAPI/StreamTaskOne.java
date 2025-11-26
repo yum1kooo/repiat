@@ -78,11 +78,18 @@ public class StreamTaskOne {
 
 
         //task 3.3
-        Map<String, Optional<Product>> collect2 = list.stream()  // 1 группируем по категории далее группируем по max цене в категории создаем comparator у указываем по чему будем
-                .collect(Collectors.groupingBy(Product::getCategory, Collectors.maxBy(Comparator.comparing(Product::getPrice))));  // сортировать макс цену
+        Map<String, Long> task3 = pr.keySet().stream()
+                .sorted()
+                .collect(Collectors.groupingBy(Product::getCategory, Collectors.counting()));
 
-        for(Map.Entry<String, Optional<Product>> entry : collect2.entrySet()) {
-            System.out.println(entry.getKey() + " -> " + entry.getValue());
+
+        int task3Count = pr.entrySet().stream()
+                .sorted()
+                .mapToInt(x -> x.getKey().getPrice() * x.getValue()).sum();
+
+
+        for (Map.Entry<String, Long> t3 : task3.entrySet()){
+            System.out.println(t3.getKey() + " <- key " + t3.getValue() + " <- value");
         }
     }
 }

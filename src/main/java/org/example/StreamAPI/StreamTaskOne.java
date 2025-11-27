@@ -5,12 +5,12 @@ import java.util.stream.Collectors;
 
 public class StreamTaskOne {
     public static void main(String[] args) {
-        Product product = new Product("asd", " ", 11);
+        Product product = new Product("asd", " ", 11, 3);
         Map<Product, Integer> pr = new HashMap<>();
-        pr.put(new Product("rtx 5070", "videocard", 53000), 1);
-        pr.put(new Product("banana", "food", 10), 500);
-        pr.put(new Product("TV", "electronic", 53000), 1);
-        pr.put(new Product("TV", "electronic", 53000), 1);
+        pr.put(new Product("rtx 5070", "videocard", 53000,0), 1); //count в ключе считать не надо это для другого примера
+        pr.put(new Product("banana", "food", 10,0), 500);
+        pr.put(new Product("TV", "electronic", 53000,0), 1);
+        pr.put(new Product("TV", "electronic", 53000,0), 1);
         System.out.println(pr.size());
 
         //TASK ONE
@@ -38,11 +38,11 @@ public class StreamTaskOne {
 
         //TASK TWO
         List<Product> list = new ArrayList<>();
-        list.add(new Product("banana", "food", 39));
-        list.add(new Product("TV", "electronic", 5));
-        list.add(new Product("iphone", "electronic", 69000));
-        list.add(new Product("macbook", "electronic", 76000));
-        list.add(new Product("rtx 4080", "electronic", 150000));
+        list.add(new Product("banana", "food", 39,3));
+        list.add(new Product("TV", "electronic", 5,6));
+        list.add(new Product("iphone", "electronic", 69000,4));
+        list.add(new Product("macbook", "electronic", 76000,3));
+        list.add(new Product("rtx 4080", "electronic", 150000,2));
 
         //task 2.1
         Map<String, List<Product>> collect = list.stream()
@@ -78,18 +78,19 @@ public class StreamTaskOne {
 
 
         //task 3.3
-        Map<String, Long> task3 = pr.keySet().stream()
-                .sorted()
-                .collect(Collectors.groupingBy(Product::getCategory, Collectors.counting()));
-
-
-        int task3Count = pr.entrySet().stream()
-                .sorted()
-                .mapToInt(x -> x.getKey().getPrice() * x.getValue()).sum();
-
-
-        for (Map.Entry<String, Long> t3 : task3.entrySet()){
-            System.out.println(t3.getKey() + " <- key " + t3.getValue() + " <- value");
+        Map<String, Long> ab = list.stream()
+                //.sorted()
+                .collect(Collectors.groupingBy(Product::getCategory,
+                        Collectors.summarizingInt(x -> x.getPrice() * x.getCount())))
+                .entrySet().stream()
+                .collect(Collectors.toMap(
+                        Map.Entry::getKey,
+                        e -> e.getValue().getSum(),   // значение (Long)
+                        (a, b) -> a,                  // merge function
+                        LinkedHashMap::new            // вот здесь создаётся LinkedHashMap
+                ));
+        for (Map.Entry<String, Long> a : ab.entrySet()){
+            System.out.println(a.getKey() + " <- key " + a.getValue() + " <- value");
         }
     }
 }
@@ -99,12 +100,14 @@ class Product {
     String name;
     String category;
     int price;
+    int count;
 
 
-    public Product(String name, String category, int price) {
+    public Product(String name, String category, int price, int count) {
         this.name = name;
         this.category = category;
         this.price = price;
+        this.count = count;
     }
 
     public int getPrice() {
@@ -129,6 +132,15 @@ class Product {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+
+    public int getCount() {
+        return count;
+    }
+
+    public void setCount(int count) {
+        this.count = count;
     }
 
     @Override

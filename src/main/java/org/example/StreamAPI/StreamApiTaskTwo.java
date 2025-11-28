@@ -54,6 +54,32 @@ public class StreamApiTaskTwo {
         for(Map.Entry<Character, List<String>> sixx : resSix.entrySet()){
             System.out.println(sixx.getKey() + " - key " + sixx.getValue() + " - value");
         }
+
+
+        System.out.println("task seven");
+        List<User> seven = List.of(new User("anton", 33, 28000), new User("will", 15, 15000), new User("Bill", 55, 35000));
+        LinkedHashMap<String, Long> collect = seven.stream()
+                .collect(Collectors.groupingBy(User::getName, Collectors.summarizingInt(x -> x.salary * x.getAge())))//ключ имя, значение статистика по имени(макс мин ср)
+                .entrySet().stream() //превращаем map в поток пар
+                .collect(Collectors.toMap(
+                        Map.Entry::getKey,// ключ — имя
+                        e -> e.getValue().getSum(),   // значение — сумма
+                        (z, b) -> z,                  // merge function (если вдруг ключи совпадут)
+                        LinkedHashMap::new            // LinkedHashMap
+                ));
+        for(Map.Entry<String, Long> sevenForEach : collect.entrySet()) {
+            System.out.println("key -> " + sevenForEach.getKey() + " value -> " + sevenForEach.getValue());
+        }
+
+
+        System.out.println("task nine");
+        String[] wordNine = {"arbyz", "watermelon", "apple", "banana", "apple", "apple", "arbyz", "watermelon", "kiwi"};
+        int nineCounter = 0;
+        Map<String, Long> nineMap = Arrays.stream(wordNine)
+                .collect(Collectors.groupingBy(x -> x, Collectors.counting())); //если x совпадает с существующем x тогда срабатывает counting
+        for(Map.Entry<String, Long> niine : nineMap.entrySet()){
+            System.out.println("key -> " + niine.getKey() + " value -> " + niine.getValue());
+        }
     }
 }
 

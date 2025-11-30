@@ -15,6 +15,6 @@ public class App
                 .filter(x -> x.length() > 5)
                 .sorted()
                 .toList();
-        System.out.println(list);
+        System.out.println("test " + list);
     }
 }

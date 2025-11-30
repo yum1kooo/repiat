@@ -1,5 +1,7 @@
 package org.example;
 
+import java.util.List;
+
 /**
  * Hello world!
  *
@@ -8,6 +10,11 @@ public class App
 {
     public static void main( String[] args )
     {
-        System.out.println( "Hello World!" );
+        List<String> words = List.of("apple", "banana", "kiwi", "apricot", "blueberry", "avocado");
+        List<String> list = words.stream()
+                .filter(x -> x.length() > 5)
+                .sorted()
+                .toList();
+        System.out.println(list);
     }
 }

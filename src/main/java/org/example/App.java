@@ -16,5 +16,6 @@ public class App
                 .sorted()
                 .toList();
         System.out.println("test " + list);
+        //ya ychy git poэtomy bez commitov norm
     }
 }

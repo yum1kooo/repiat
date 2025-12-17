@@ -30,20 +30,17 @@ public class mtPlusSP {
         Map<String, Long> collect = words.stream()
                 .collect(Collectors.groupingBy(Function.identity(),
                         Collectors.counting()));
+
         int wordsSizePartOne = words.size() / 5;
-        System.out.println(wordsSizePartOne);
 
         int wordsSizePartTwo = words.size() / 5 + wordsSizePartOne;
-        System.out.println(wordsSizePartTwo);
 
         int wordsSizePartThree = words.size() / 5 + wordsSizePartTwo;
-        System.out.println(wordsSizePartThree);
 
         int wordsSizePartFour = words.size() / 5 + wordsSizePartThree;
-        System.out.println(wordsSizePartFour);
 
         int wordsSizePartFive = words.size() / 5 + wordsSizePartFour;
-        System.out.println(wordsSizePartFive);
+
 
         ExecutorService ex = Executors.newFixedThreadPool(5);
 
@@ -63,8 +60,44 @@ public class mtPlusSP {
             public Map<String, Long> call() throws Exception {
                 int sum = 0;
                 Map<String, Long> collect = words.stream()
-                        .skip(wordsSizePartOne - 1)
+                        .skip(wordsSizePartOne)
                         .limit(wordsSizePartTwo)
+                        .collect(Collectors.groupingBy(Function.identity(),
+                                Collectors.counting()));
+                return collect;
+            }
+        };
+        Callable<Map<String, Long>> three = new Callable<>() {
+            @Override
+            public Map<String, Long> call() throws Exception {
+                int sum = 0;
+                Map<String, Long> collect = words.stream()
+                        .skip(wordsSizePartTwo - 1)
+                        .limit(wordsSizePartThree)
+                        .collect(Collectors.groupingBy(Function.identity(),
+                                Collectors.counting()));
+                return collect;
+            }
+        };
+        Callable<Map<String, Long>> four = new Callable<>() {
+            @Override
+            public Map<String, Long> call() throws Exception {
+                int sum = 0;
+                Map<String, Long> collect = words.stream()
+                        .skip(wordsSizePartThree - 1)
+                        .limit(wordsSizePartFour)
+                        .collect(Collectors.groupingBy(Function.identity(),
+                                Collectors.counting()));
+                return collect;
+            }
+        };
+        Callable<Map<String, Long>> five = new Callable<>() {
+            @Override
+            public Map<String, Long> call() throws Exception {
+                int sum = 0;
+                Map<String, Long> collect = words.stream()
+                        .skip(wordsSizePartFour - 1)
+                        .limit(wordsSizePartFive)
                         .collect(Collectors.groupingBy(Function.identity(),
                                 Collectors.counting()));
                 return collect;
@@ -73,11 +106,28 @@ public class mtPlusSP {
 
         Future<Map<String, Long>> f1 = ex.submit(one);
         long oneFuture = f1.get().size();
+
         Future<Map<String, Long>> f2 = ex.submit(two);
         long twoFuture = f2.get().size();
 
-        long sum = oneFuture + twoFuture;
+        Future<Map<String, Long>> f3 = ex.submit(three);
+        long threeFuture = f3.get().size();
+
+        Future<Map<String, Long>> f4 = ex.submit(four);
+        long fourFuture = f4.get().size();
+
+        Future<Map<String, Long>> f5 = ex.submit(five);
+        long fiveFuture = f5.get().size();
+
+        long sum = oneFuture + twoFuture + threeFuture;
         System.out.println(sum);
+
+        System.out.println(wordsSizePartOne + " one");
+        System.out.println(wordsSizePartTwo + " two");
+        System.out.println(wordsSizePartThree + " three");
+        System.out.println(wordsSizePartFour + " four");
+        System.out.println(wordsSizePartFive + " five");
+
 
         ex.shutdown();
     }

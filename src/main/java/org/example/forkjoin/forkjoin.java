@@ -7,15 +7,11 @@ public class forkjoin {
     public static void main(String[] args) {
         ForkJoinPool fjp = new ForkJoinPool(); //создаем fjp для запуска задачи
 
-        int sum = 0; // в ней хранятся числа которые дают остаток при делении на 2 == 0 (тоесть честные)
+        int[] arr = new int[100_000]; //создаем массив с которым мы будем работать и заполняем его
+        for (int i = 0; i < arr.length; i++) {
+            arr[i] = i;
+        }
 
-        int[] arr = new int[100_000]; //создаем массив в котором будут хранится числа
-   //     for(int i = 0; i < arr.length; i++) { // проходимя по всему массиву и фильтруем числа
-   //             if (i % 2 == 0){
-   //                     sum++;
-   //                 }
-   //
-   //         }
         Action task = new Action(arr, 0, arr.length); // создаем экземпляр класса action и в него передаем массив с которым работаем а так же границы работы
 
         int result = fjp.invoke(task);  // для форк джоина дает задачу
@@ -28,7 +24,7 @@ class Action extends RecursiveTask<Integer> {
     private int from; //точка старта при работе fjp
     private int to; // конец
 
-    public Action(int[] arr, int from, int to){ // дефольный конструктор
+    public Action(int[] arr, int from, int to){ // дефолтный конструктор
         this.arr = arr;
         this.from = from;
         this.to = to;

@@ -4,6 +4,7 @@ import java.util.concurrent.ForkJoinPool;
 import java.util.concurrent.RecursiveTask;
 
 public class forkjoin {
+
     public static void main(String[] args) {
         ForkJoinPool fjp = new ForkJoinPool(); //создаем fjp для запуска задачи
 
@@ -17,25 +18,28 @@ public class forkjoin {
         int result = fjp.invoke(task);  // для форк джоина дает задачу
         System.out.println(result); // выводим результат
         System.out.println();
+
     }
 }
 
 class Action extends RecursiveTask<Integer> {
+
     private int[] arr;  // массив для работы
     private int from; //точка старта при работе fjp
     private int to; // конец
 
-    public Action(int[] arr, int from, int to){ // дефолтный конструктор
+    public Action(int[] arr, int from, int to) { // дефолтный конструктор
         this.arr = arr;
         this.from = from;
         this.to = to;
     }
+
     @Override
     protected Integer compute() { // метод унаследованный от RecursiveTask
-        if(to - from <= 10_000){ //если длина меньше 10000 то задачу мы не делим
+        if (to - from <= 10_000) { //если длина меньше 10000 то задачу мы не делим
             int sum = 0; //сумма элементов текущего диапазона
-            for(int i = from; i < to; i++){
-                if (i % 2 == 0){
+            for (int i = from; i < to; i++) {
+                if (i % 2 == 0) {
                     sum++;
                 }
             }

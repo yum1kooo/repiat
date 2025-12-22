@@ -17,7 +17,7 @@ public class forkjoin {
 
         int result = fjp.invoke(task);  // для форк джоина дает задачу
         System.out.println(result); // выводим результат
-        System.out.println("");
+        
 
     }
 }
